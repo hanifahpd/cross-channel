@@ -1,8 +1,4 @@
-# cross-channel
-The goal of this project is to create a scalable marketing intelligence ecosystem that consolidates fragmented advertising data into a unified reporting framework, enabling smarter optimisation of digital marketing activities.
-
-
-# Digital Advertising Data Intelligence Platform
+# Cross Channel: Digital Advertising Business Intelligence Platform
 An end-to-end digital advertising data pipeline designed to transform multi-channel advertising data into actionable business insights.
 
 ## Overview
