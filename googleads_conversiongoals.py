@@ -14,11 +14,11 @@ from google.ads.googleads.errors import GoogleAdsException
 from datetime import datetime, timedelta
 
 # Setup paths
-base_folder = r'G:/Reports/92_Google_ads/GA_API/'
-csv_folder = r'G:/Source Reports/92_Google_ads/'
-config_path = os.path.join(base_folder, 'googleads_config_2025.yaml')
-csv_path = os.path.join(csv_folder, 'gads_convgoals.csv')
-log_path = os.path.join(base_folder, 'gads_convgoals.log')
+base_folder = r'A:path/to/directory'
+csv_folder = r'A:path/to/directory'
+config_path = os.path.join(base_folder, 'googleads_config.yaml')
+csv_path = os.path.join(csv_folder, 'gads_customgoals.csv')
+log_path = os.path.join(channel_folder, 'Custom Goals', 'gads_customgoals.log')
 
 # Initialize Google Ads client
 client = GoogleAdsClient.load_from_storage(config_path)
@@ -107,10 +107,8 @@ def parse_campaign(rows):
     return pd.DataFrame(data)
 
 def main():
-    customer_ids = ["7798263573", "4129748388", "8255223189", "8181393760", "4903654018",
-                    "9591862767", "9037951827", "4754830474", "2433792321", "9373069304",
-                    "3443455271", "9678021940", "1476502829", "9370094416", "5872445404",
-                    "3237965092", "8708204967", "4427721949", "8777571444", "8104899705", "4439852533"
+    customer_ids = ["11111111", "22222222", "33333333", "44444444", "55555555",
+                    ...
                     ]
 
     query_conversion_goal = """
