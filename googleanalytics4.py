@@ -18,7 +18,7 @@ OUTPUT_CSV = 'H:/path/to/directory/filename.csv'
 
 def get_ga4_data(property_id):
     client = BetaAnalyticsDataClient()
-    target_channels = [ # set based on whats needed
+    target_channels = [
         "facebook / cpc", 
         "google / cpc", 
         "pinterest / cpc", 
@@ -30,14 +30,14 @@ def get_ga4_data(property_id):
     ]
     request = RunReportRequest(
         property=f"properties/{property_id}",
-        dimensions=[ #check the keyword in google analytics query
+        dimensions=[
             Dimension(name="date"),
             Dimension(name="sessionCampaignName"),
             Dimension(name="sessionManualAdContent"),
             Dimension(name="sessionManualTerm"),
             Dimension(name="sessionSourceMedium")
         ],
-        metrics=[ #check the keyword in google analytics query
+        metrics=[
             Metric(name="keyEvents:purchase"),
             Metric(name="ecommercePurchases"),
             Metric(name="totalRevenue"),
@@ -48,8 +48,7 @@ def get_ga4_data(property_id):
             Metric(name="addToCarts"),
             Metric(name="totalUsers")
         ],
-        date_ranges=[DateRange(start_date="2022-01-01", end_date="today")], #set the date range here
-        #filter is opotional, but help in getting just the necessary data
+        date_ranges=[DateRange(start_date="2022-01-01", end_date="today")],
         dimension_filter=FilterExpression(
             filter=Filter(
                 field_name="sessionSourceMedium",
@@ -95,7 +94,7 @@ def main():
     # 2. Save to CSV
     if all_data:
         df = pd.DataFrame(all_data)
-        df['Type'] = 'Device'
+        df['Type'] = 'RAW'
         # Format the date column if it exists
         if 'date' in df.columns:
             df['date'] = pd.to_datetime(df['date'])
@@ -109,4 +108,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
