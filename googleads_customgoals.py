@@ -71,13 +71,18 @@ def parse_conversion_action(rows):
         ca = row.conversion_action
         c = row.customer
         s = row.segments
-        m = row.metrics
         data.append({
             "segments_date": s.date if s and s.date else None,
             "customer_id": c.id,
             "customer_name": c.descriptive_name,
             "conversion_action_name": ca.name if ca and ca.name else None,
             })
+    columns = [
+      'customer_id',
+      'customer_name',
+      'segments_date',
+      'conversion_action_name'
+  ]
     return pd.DataFrame(data)
 
 def parse_custom_goal(rows):
@@ -94,6 +99,15 @@ def parse_custom_goal(rows):
             "custom_goal_status": ccg.status if hasattr(ccg, 'status') else None,
             "custom_goal_id": ccg.id if hasattr(ccg, 'id') else None,
         })
+    columns = [
+      'customer_id',
+      'customer_name',
+      'campaign_id',
+      'campaign_name',
+      'custom_goal_name',
+      'custom_goal_status',
+      'custom_goal_id',
+  ]
     return pd.DataFrame(data)
 
 def main():
@@ -142,41 +156,46 @@ def main():
             customer.id,
             customer.descriptive_name
         FROM conversion_goal_campaign_config
-
-    """
+"""
     all_data = []
 
     for cust_id in customer_ids:
-        try:
-            # rows_ccg = run_query(client, cust_id, query_conversion_goal)
-            rows_ca = run_query(client, cust_id, query_conversion_action)
-            rows_cg = run_query(client, cust_id, query_custom_goal)
-        except Exception as e:
-            print(f"Error fetching data for customer {cust_id}: {e}")
+      try:
+        rows_ca = run_query(client, cust_id, query_conversion_action)
+        rows_cg = run_query(client, cust_id, query_custom_goal)
 
-        #  df_ccg = parse_campaign_conversion_goal(rows_ccg)
         df_ca = parse_conversion_action(rows_ca)
         df_cg = parse_custom_goal(rows_cg)
 
-        # Merge dataframes:
-        # df_merged = pd.merge(df_ccg, df_cg, on=["campaign_id", "campaign_name", "resource_name","customer_id", "customer_name"], how="outer")
-        df_final = pd.merge(df_cg, df_ca, on=["customer_id", "customer_name"], how="outer")
-        all_data.append(df_final)
+      # Safe handling if one of the DataFrames is empty
+        if not df_cg.empty and not df_ca.empty:
+            df_final = pd.merge(
+            df_cg, df_ca, on=['customer_id', 'customer_name'], how='outer'
+        )
+        elif not df_cg.empty:
+            df_final = df_cg
+        else:
+            df_final = df_ca
 
-    if all_data:
-            df_finally = pd.concat(all_data, ignore_index=True)
-            if not df_existing.empty:
-                df_finally = pd.concat([df_existing, df_finally], ignore_index=True)
+        if not df_final.empty:
+            all_data.append(df_final)
+        else:
+            log_message(f'No data returned for customer ID: {cust_id}')
 
-            df_finally.to_csv(csv_path, index=False)
-            log_message(f"Data saved successfully to {csv_path}. Total rows: {len(df_final)}")
+      except Exception as e:
+        log_message(f'Error fetching data for customer {cust_id}: {e}')
+
+    if all_data:        
+        df_finally = pd.concat(all_data, ignore_index=True)     
+        if not df_existing.empty:
+          df_finally = pd.concat([df_existing, df_finally], ignore_index=True)
+        df_finally.to_csv(csv_path, index=False)
+        log_message(f"Data saved successfully to {csv_path}. Total rows: {len(df_final)}")
     else:
         log_message("No new data to save.")
-
     # combine all data into a single dataframe
         df_finally = pd.concat(all_data, ignore_index=True)
-
         df_finally.to_csv("./gads_customgoals.csv", index=False)
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+  main()
