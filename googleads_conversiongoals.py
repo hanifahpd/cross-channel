@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""based on GoogleAds.ipynb
-
-Original file is located at
-    https://colab.research.google.com/drive/12lUILLD2L4cKwRDVw6Qr-BDZl_rzvGdk
-
-This code snippet is to fetch Google Ads through API with the main focus to get Conversion Goals in Conversion Action setting
-    """
-
 import os
 import pandas as pd
 from google.ads.googleads.client import GoogleAdsClient
