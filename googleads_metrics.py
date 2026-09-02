@@ -12,10 +12,10 @@ config_path = os.path.join(base_folder, 'googleads_config.yaml') #accessed throu
 csv_path = os.path.join(csv_folder, 'gads_metrics.csv')
 log_path = os.path.join(channel_folder, 'Campaign Metrics', 'gads_metrics.log')
 
-# Initialize Google Ads client, pay attention to the version. always keep the updated one
-client = GoogleAdsClient.load_from_storage(config_path, version="v23")
+# Initialize Google Ads client
+client = GoogleAdsClient.load_from_storage(config_path)
 
-# Dates. set the designated date here
+# Dates
 today = datetime.today().date()
 start_date = datetime(2022, 1, 1).date()
 last90days = today - timedelta(days=90)
@@ -123,7 +123,6 @@ def main():
               metrics.unique_users,
               metrics.average_impression_frequency_per_user,
               campaign_budget.amount_micros,
-              metrics.conversions,
               metrics.all_conversions,
               metrics.cost_per_conversion,
               metrics.video_trueview_views,
@@ -178,7 +177,7 @@ def main():
     else:
         log_message("No new data to save.")
         
-            # combine all data into a single dataframe
+        # combine all data into a single dataframe
         df_finally = pd.concat(all_data, ignore_index=True)
         df_finally.to_csv("./gads_metrics.csv", index=False)
 
